@@ -4,7 +4,7 @@ set -e
 echo "Waiting for PostgreSQL..."
 retries=0
 max_retries=30
-while ! python -c "
+while ! /app/.venv/bin/python -c "
 import socket, os
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((os.environ['DBHOST'], int(os.environ['DBPORT'])))
@@ -21,16 +21,16 @@ done
 echo "PostgreSQL is ready."
 
 echo "Running migrations..."
-python manage.py migrate --noinput
+/app/.venv/bin/python manage.py migrate --noinput
 
 echo "Creating default admin user (if needed)..."
-python manage.py create_default_admin
+/app/.venv/bin/python manage.py create_default_admin
 
 echo "Collecting static files..."
-python manage.py collectstatic --noinput
+/app/.venv/bin/python manage.py collectstatic --noinput
 
 echo "Starting Gunicorn server..."
-exec gunicorn crm.wsgi:application \
+exec /app/.venv/bin/gunicorn crm.wsgi:application \
     --bind 0.0.0.0:8000 \
     --workers 4 \
     --threads 2 \
