@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views
+from django.db import connection
+from django.http import JsonResponse
 from django.urls import include, path, register_converter
 from django.urls import re_path as url
 from django.views.generic import TemplateView
@@ -26,7 +28,22 @@ DJANGO_PATH_CONVERTER_MAPPING["uid"] = OpenApiTypes.UUID
 
 app_name = "crm"
 
+
+def health_check(request):
+    """Lightweight liveness/readiness probe for Coolify/Traefik."""
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        return JsonResponse({"status": "healthy"})
+    except Exception as exc:
+        return JsonResponse({"status": "unhealthy", "error": str(exc)}, status=503)
+
+
 urlpatterns = [
+    # Liveness/readiness probe used by Coolify/Traefik health checks.
+    # Kept before the app routes so it never touches auth, RLS, or tenant
+    # middleware beyond what the DB connectivity check requires.
+    path("health/", health_check, name="health-check"),
     url(
         r"^healthz/$",
         TemplateView.as_view(template_name="healthz.html"),
