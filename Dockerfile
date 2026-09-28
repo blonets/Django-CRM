@@ -1,36 +1,45 @@
-FROM python:3.12-slim-bookworm
+# Stage 1: Build dependencies
+FROM python:3.12-slim AS builder
 
-# Prevent Python from buffering stdout/stderr (useful for Docker logs)
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Install system dependencies for WeasyPrint (cairo, pango) and PostgreSQL
+WORKDIR /app
+
+# Install build dependencies for psycopg2
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \
-    libcairo2 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libgdk-pixbuf2.0-0 \
-    libffi-dev \
-    shared-mime-info \
+    build-essential libpq-dev \
     && rm -rf /var/lib/apt/lists/*
+
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Runtime
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=crm.settings
 
 WORKDIR /app
 
-# Install uv (fast Python package manager).
-COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
+# Install runtime dependencies (curl is REQUIRED for healthcheck)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Move the venv outside of backend so it doesn't get overwritten with the copy
-ENV UV_PROJECT_ENVIRONMENT=/opt/venv
-
-# Install Python dependencies into /app/.venv (layer cached on lockfile changes)
-COPY backend/pyproject.toml backend/uv.lock backend/.python-version ./
-RUN uv sync --frozen --no-install-project
+# Copy Python packages from builder
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy backend source
 COPY backend/ .
 
-# Put the venv's binaries on PATH so `python`, `gunicorn`, `celery` etc. resolve.
-ENV PATH="/opt/venv/bin:$PATH"
+# Make entrypoint executable
+RUN chmod +x /entrypoint.sh 2>/dev/null || true
 
 EXPOSE 8000
+
+# Use Gunicorn for production
+CMD ["/bin/bash", "/entrypoint.sh"]
