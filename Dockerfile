@@ -11,12 +11,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never
 
-# Install uv (the fast Python package manager this project uses)
+# Install uv (the package manager this project uses)
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
-# System deps needed to build psycopg2 and similar C-extension packages
+# System deps needed to build psycopg2 and other C-extension packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpq-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -24,9 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy dependency manifests only — this layer caches on the lockfile
 COPY backend/pyproject.toml backend/uv.lock ./
 
-# Install dependencies into a .venv we can copy forward.
-# --no-install-project: only install third-party deps here, not the project.
-# --no-dev: skip dev/test dependencies for a smaller runtime image.
+# Install third-party dependencies into a .venv we can copy forward.
+# --no-install-project: skip the project itself (source comes later).
+# --no-dev: skip dev/test deps for a smaller runtime image.
 RUN uv sync --frozen --no-install-project --no-dev
 
 # ============================================================================
@@ -52,10 +52,10 @@ COPY --from=builder /app/.venv /app/.venv
 # Copy the backend source
 COPY backend/ .
 
-# Make entrypoint executable (the compose mounts it in, but this is a safety net)
+# Safety net in case entrypoint isn't mounted yet
 RUN chmod +x /entrypoint.sh 2>/dev/null || true
 
-# Sanity check: Django must be importable at build time
+# Build-time sanity check: Django and Gunicorn must be importable
 RUN python -c "import django; print('Django', django.get_version())" \
     && gunicorn --version
 
