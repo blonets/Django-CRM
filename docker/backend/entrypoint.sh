@@ -29,5 +29,11 @@ python manage.py create_default_admin
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-echo "Starting development server..."
-exec python manage.py runserver 0.0.0.0:8000
+echo "Starting Gunicorn server..."
+exec gunicorn crm.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 4 \
+    --threads 2 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile -
