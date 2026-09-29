@@ -68,12 +68,6 @@ services:
     networks:
       - coolify
       - default
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bottlecrm-backend.rule=Host(`${SERVICE_FQDN_BACKEND}`)"
-      - "traefik.http.routers.bottlecrm-backend.entryPoints=http,https"
-      - "traefik.http.services.bottlecrm-backend.loadbalancer.server.port=8000"
-      - "traefik.docker.network=coolify"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/healthz/ || exit 1"]
       interval: 15s
@@ -148,12 +142,6 @@ services:
     networks:
       - coolify
       - default
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bottlecrm-frontend.rule=Host(`${SERVICE_FQDN_FRONTEND}`)"
-      - "traefik.http.routers.bottlecrm-frontend.entryPoints=http,https"
-      - "traefik.http.services.bottlecrm-frontend.loadbalancer.server.port=3000"
-      - "traefik.docker.network=coolify"
 
 volumes:
   postgres_data:
