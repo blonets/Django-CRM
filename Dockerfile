@@ -44,6 +44,12 @@ WORKDIR /app
 # Runtime libs: libpq5 for psycopg2, curl for the /health/ healthcheck
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 curl \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    libffi8 \
+    libcairo2 \
+    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # Bring in the virtualenv from the builder stage
