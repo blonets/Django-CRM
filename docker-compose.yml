@@ -38,8 +38,8 @@ services:
       DEBUG: "False"
       ENV_TYPE: production
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
-      CSRF_TRUSTED_ORIGINS: https://$\{SERVICE_FQDN_BACKEND\}
-      DOMAIN_NAME: https://$\{SERVICE_FQDN_BACKEND\}
+      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
+      DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
       DBNAME: crm_db
       DBUSER: crm_user
       DBPASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
@@ -48,8 +48,8 @@ services:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       CORS_ALLOW_ALL: "False"
-      CORS_ALLOWED_ORIGINS: https://$\{SERVICE_FQDN_FRONTEND\}
-      PUBLIC_DJANGO_API_URL: https://$\{SERVICE_FQDN_BACKEND\}
+      CORS_ALLOWED_ORIGINS: https://${SERVICE_FQDN_FRONTEND}
+      PUBLIC_DJANGO_API_URL: https://${SERVICE_FQDN_BACKEND}
       DEFAULT_FROM_EMAIL: noreply@${SERVICE_FQDN_BACKEND}
       ADMIN_EMAIL: admin@${SERVICE_FQDN_BACKEND}
       ADMIN_PASSWORD: ${SERVICE_PASSWORD_ADMIN}
@@ -85,8 +85,8 @@ services:
       DEBUG: "False"
       ENV_TYPE: production
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
-      CSRF_TRUSTED_ORIGINS: https://$\{SERVICE_FQDN_BACKEND\}
-      DOMAIN_NAME: https://$\{SERVICE_FQDN_BACKEND\}
+      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
+      DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
       DBNAME: crm_db
       DBUSER: crm_user
       DBPASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
@@ -112,8 +112,8 @@ services:
       DEBUG: "False"
       ENV_TYPE: production
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
-      CSRF_TRUSTED_ORIGINS: https://$\{SERVICE_FQDN_BACKEND\}
-      DOMAIN_NAME: https://$\{SERVICE_FQDN_BACKEND\}
+      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
+      DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
       DBNAME: crm_db
       DBUSER: crm_user
       DBPASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
@@ -135,8 +135,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      PUBLIC_DJANGO_API_URL: https://$\{SERVICE_FQDN_BACKEND\}
-      ORIGIN: https://$\{SERVICE_FQDN_FRONTEND\}
+      PUBLIC_DJANGO_API_URL: https://${SERVICE_FQDN_BACKEND}
+      ORIGIN: https://${SERVICE_FQDN_FRONTEND}
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
