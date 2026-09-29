@@ -65,6 +65,9 @@ services:
         condition: service_healthy
     command: /bin/bash /entrypoint.sh
     restart: unless-stopped
+    networks:
+      - coolify
+      - default
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bottlecrm-backend.rule=Host(`${SERVICE_FQDN_BACKEND}`)"
@@ -142,11 +145,19 @@ services:
       PUBLIC_DJANGO_API_URL: https://${SERVICE_FQDN_BACKEND}
       ORIGIN: https://${SERVICE_FQDN_FRONTEND}
     restart: unless-stopped
+    networks:
+      - coolify
+      - default
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bottlecrm-frontend.rule=Host(`${SERVICE_FQDN_FRONTEND}`)"
+      - "traefik.http.routers.bottlecrm-frontend.entryPoints=http,https"
       - "traefik.http.services.bottlecrm-frontend.loadbalancer.server.port=3000"
       - "traefik.docker.network=coolify"
 
 volumes:
   postgres_data:
+
+networks:
+  coolify:
+    external: true
