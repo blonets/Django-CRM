@@ -41,7 +41,7 @@ services:
       DEBUG: "False"
       ENV_TYPE: production
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
-      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
+      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND},https://${SERVICE_FQDN_FRONTEND}
       DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
       FRONTEND_URL: https://${SERVICE_FQDN_FRONTEND}
       DBNAME: crm_db
@@ -53,6 +53,11 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       CORS_ALLOW_ALL: "False"
       CORS_ALLOWED_ORIGINS: https://${SERVICE_FQDN_FRONTEND}
+      CORS_ALLOW_CREDENTIALS: "True"
+      SESSION_COOKIE_SAMESITE: "None"
+      SESSION_COOKIE_SECURE: "True"
+      CSRF_COOKIE_SAMESITE: "None"
+      CSRF_COOKIE_SECURE: "True"
       PUBLIC_DJANGO_API_URL: https://${SERVICE_FQDN_BACKEND}
       DEFAULT_FROM_EMAIL: noreply@${SERVICE_FQDN_BACKEND}
       ADMIN_EMAIL: admin@${SERVICE_FQDN_BACKEND}
@@ -87,7 +92,7 @@ services:
       DEBUG: "False"
       ENV_TYPE: production
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
-      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
+      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND},https://${SERVICE_FQDN_FRONTEND}
       DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
       FRONTEND_URL: https://${SERVICE_FQDN_FRONTEND}
       DBNAME: crm_db
@@ -116,7 +121,7 @@ services:
       DEBUG: "False"
       ENV_TYPE: production
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
-      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
+      CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND},https://${SERVICE_FQDN_FRONTEND}
       DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
       FRONTEND_URL: https://${SERVICE_FQDN_FRONTEND}
       DBNAME: crm_db
