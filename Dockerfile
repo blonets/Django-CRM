@@ -49,13 +49,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Bring in the virtualenv from the builder stage
 COPY --from=builder /app/.venv /app/.venv
 
-# ----------------------------------------------------------------------------
-# Symlink every venv binary into /usr/local/bin so `python`, `gunicorn`,
-# `celery`, etc. are found even when the runtime does not honour ENV PATH
-# (some container runtimes, including the one Coolify uses, rewrite PATH).
-# ----------------------------------------------------------------------------
-RUN ln -sf /app/.venv/bin/* /usr/local/bin/ 2>/dev/null || true
-
 # Copy the backend source
 COPY backend/ .
 
@@ -63,8 +56,8 @@ COPY backend/ .
 RUN chmod +x /entrypoint.sh 2>/dev/null || true
 
 # Build-time sanity check: Django and Gunicorn must be importable
-RUN /app/.venv/bin/python -c "import django; print('Django', django.get_version())" \
-    && /app/.venv/bin/gunicorn --version
+RUN python -c "import django; print('Django', django.get_version())" \
+    && gunicorn --version
 
 EXPOSE 8000
 
