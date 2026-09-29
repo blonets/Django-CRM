@@ -40,6 +40,7 @@ services:
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
       CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
       DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
+      FRONTEND_URL: https://${SERVICE_FQDN_FRONTEND}
       DBNAME: crm_db
       DBUSER: crm_user
       DBPASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
@@ -87,6 +88,7 @@ services:
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
       CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
       DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
+      FRONTEND_URL: https://${SERVICE_FQDN_FRONTEND}
       DBNAME: crm_db
       DBUSER: crm_user
       DBPASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
@@ -114,6 +116,7 @@ services:
       ALLOWED_HOSTS: ${SERVICE_FQDN_BACKEND},backend,localhost,127.0.0.1
       CSRF_TRUSTED_ORIGINS: https://${SERVICE_FQDN_BACKEND}
       DOMAIN_NAME: https://${SERVICE_FQDN_BACKEND}
+      FRONTEND_URL: https://${SERVICE_FQDN_FRONTEND}
       DBNAME: crm_db
       DBUSER: crm_user
       DBPASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
