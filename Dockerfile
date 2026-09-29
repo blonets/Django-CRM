@@ -52,8 +52,9 @@ COPY --from=builder /app/.venv /app/.venv
 # Copy the backend source
 COPY backend/ .
 
-# Safety net in case entrypoint isn't mounted yet
-RUN chmod +x /entrypoint.sh 2>/dev/null || true
+# Copy the entrypoint script INTO the image
+COPY docker/backend/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Build-time sanity check: Django and Gunicorn must be importable
 RUN python -c "import django; print('Django', django.get_version())" \
