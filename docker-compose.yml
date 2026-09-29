@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   db:
-    image: postgres:16-alpine
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
     environment:
       POSTGRES_DB: crm_db
       POSTGRES_USER: postgres
@@ -10,7 +12,6 @@ services:
       APP_DB_PASSWORD: ${SERVICE_PASSWORD_APP_DB_USER}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/init-rls-user.sh:/docker-entrypoint-initdb.d/init-rls-user.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
