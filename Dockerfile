@@ -63,8 +63,8 @@ COPY backend/ .
 RUN chmod +x /entrypoint.sh 2>/dev/null || true
 
 # Build-time sanity check: Django and Gunicorn must be importable
-RUN python -c "import django; print('Django', django.get_version())" \
-    && gunicorn --version
+RUN /app/.venv/bin/python -c "import django; print('Django', django.get_version())" \
+    && /app/.venv/bin/gunicorn --version
 
 EXPOSE 8000
 
